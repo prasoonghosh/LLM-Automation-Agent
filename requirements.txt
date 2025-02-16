@@ -1,1 +1,11 @@
+fastapi
+uvicorn
+openai
+pydantic
+email
+sqlalchemy
+pymysql
+pandas
+numpy
+PyPDF2
  
