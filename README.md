@@ -6,14 +6,9 @@ The **LLM Automation Agent** is designed to process log files, reports, and code
 
 ## Current Achievements
 
-- **Task Execution Framework:** Accepts plain-English instructions, parses them, and executes relevant automation tasks.
 - **Log File Analysis:** Extracts and processes error messages from log files.
-- **Email Processing:** Reads and lists email contents.
 - **Summarization:** Generates concise summaries from long text inputs.
-- **Error Handling:** Identifies and returns error messages from various system outputs.
-- **Modular Structure:** Clean separation of concerns with `task_parser`, `task_executor`, and `utils` modules.
 - **FastAPI Integration:** Provides an API endpoint (`/execute-task/`) to accept tasks via HTTP requests.
-- **CI Pipeline Ready:** The agent can be integrated into automated CI/CD pipelines for seamless execution.
 
 ## How It Works
 
