@@ -1,39 +1,55 @@
-from textblob import TextBlob
+import os
+from typing import Dict
+from agent.llm_utils import summarize_text
 
-
-def fetch_emails():
+def execute_task(parsed_task: Dict) -> Dict:
     """
-    Simulates fetching emails from a system.
+    Executes the parsed task based on the identified type.
     """
-    return {"status": "success", "emails": ["Email 1", "Email 2", "Email 3"]}
+    task_type = parsed_task.get("task")
+    filename = parsed_task.get("filename")
+
+    if not filename:
+        return {"status": "error", "message": "Filename not provided."}
+
+    if not os.path.exists(filename):
+        return {"status": "error", "message": f"File '{filename}' not found."}
+
+    if task_type == "read_file":
+        return read_file(filename)
+
+    elif task_type == "extract_errors":
+        return extract_errors_from_file(filename)
+
+    elif task_type == "summarize_file":
+        return summarize_file(filename)
+
+    else:
+        return {"status": "error", "message": "Unsupported task."}
 
 
-def summarize_text(text):
-    """
-    Summarizes the given text by extracting key sentences.
-    """
-    blob = TextBlob(text)
-    sentences = blob.sentences
-
-    # If text is too short, return it as is
-    if len(sentences) <= 2:
-        return text
-
-    # Extract first 3 sentences for summary
-    summary = " ".join(str(sentences[i]) for i in range(min(3, len(sentences))))
-    return summary
+def read_file(filename: str) -> Dict:
+    """ Reads and returns the full content of a file. """
+    with open(filename, "r", encoding="utf-8") as file:
+        content = file.read()
+    return {"status": "success", "content": content}
 
 
-def execute_task(parsed_task):
-    """
-    Executes the task based on the parsed input.
-    """
-    if parsed_task["task"] == "fetch_emails":
-        return fetch_emails()
+def extract_errors_from_file(filename: str) -> Dict:
+    """ Extracts lines containing 'error' from a log file. """
+    errors = []
+    with open(filename, "r", encoding="utf-8") as file:
+        for line in file:
+            if "error" in line.lower():
+                errors.append(line.strip())
 
-    elif parsed_task["task"] == "summarize_text":
-        text = parsed_task.get("content", "")
-        if text:
-            return {"status": "success", "summary": summarize_text(text)}
+    return {"status": "success", "errors": errors}
 
-    return {"status": "error", "message": "Unsupported task."}
+
+def summarize_file(filename: str) -> Dict:
+    """ Reads the content of a file and generates a summary using LLM. """
+    with open(filename, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    summary = summarize_text(content)
+    return {"status": "success", "summary": summary}
