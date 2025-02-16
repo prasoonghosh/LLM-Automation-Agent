@@ -19,14 +19,8 @@ async def execute_task_endpoint(request: TaskRequest):
         # Parse the task
         parsed_task = parse_task(request.user_input)
 
-        # Log parsed task
-        print(f"Parsed Task: {parsed_task}")
-
         # Execute the parsed task
         result = execute_task(parsed_task)
-
-        # Log execution result
-        print(f"Execution Result: {result}")
 
         # Return the result
         return {"status": "success", "data": result}

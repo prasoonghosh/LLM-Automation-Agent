@@ -1,20 +1,16 @@
-import logging
-
-logger = logging.getLogger(__name__)
-
-def parse_task(user_input: str):
+import re
+def parse_task(user_input):
     """
-    Parses the user's input and returns a structured task.
+    Parses the user input to identify the task type.
     """
-    logger.info(f"Parsing user input: {user_input}")
+    user_input = user_input.lower()
 
-    # Normalize input
-    user_input = user_input.lower().strip()
-
-    # Check for email-related tasks
-    if "email" in user_input or "fetch emails" in user_input or "get emails" in user_input:
-        logger.info("Task recognized: fetch_emails")
+    if "fetch emails" in user_input:
         return {"task": "fetch_emails"}
 
-    logger.info("Task not recognized")
+    elif "summarize" in user_input:
+        match = re.search(r"summarize (.+)", user_input)
+        if match:
+            return {"task": "summarize_text", "content": match.group(1)}
+
     return {"task": "unsupported"}
